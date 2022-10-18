@@ -1,5 +1,5 @@
-import 'package:get/get.dart';
 import 'package:tarea1_danielcastro/model/productoModel.dart';
+import 'package:get/get.dart';
 
 class ShoppingCartController extends GetxController {
   var selectedProduct = <ProductModel>[].obs;
@@ -10,16 +10,18 @@ class ShoppingCartController extends GetxController {
       selectedProduct.fold(0, (sum, item) => sum + item.price);
 
   addProductToShoppingCard(ProductModel product) {
-    print("as agregado el articulo ${product.productName}");
     selectedProduct.add(product);
+
+    Get.snackbar("Se agrego ${product.productName}",
+        "Se acaba de agregar el producto ${product.productName} al carrito de compra",
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 3));
   }
 
   removeProductToShoppingCard(ProductModel product) {
-    if (!selectedProduct.contains(product)) {
-      return;
+    if (selectedProduct.contains(product)) {
+      selectedProduct.remove(product);
     }
-    int index = selectedProduct.indexOf(product);
-    selectedProduct.insert(index, product);
   }
 
   cleanData() {

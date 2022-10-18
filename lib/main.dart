@@ -21,10 +21,9 @@ class MyApp extends StatelessWidget {
         '/welcome': (context) => const WelcomeScreen(),
         '/home': (context) => HomeScreen(),
         '/details': (context) => const DetailScreen(),
-        '/shoppingcart': (context) => const ShoppingScreen(),
+        '/shoppingcart': (context) => ShoppingScreen(),
         '/purshase': (context) => PurshaseScreen(),
         '/searchbar': (context) => const SearchBarScreen(),
-        '/thanks': (context) => const ThanksScreen()
       },
     );
   }

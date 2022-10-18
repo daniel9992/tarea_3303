@@ -4,7 +4,7 @@ import 'package:tarea1_danielcastro/controller/index.dart';
 import 'package:tarea1_danielcastro/model/productoModel.dart';
 import 'package:tarea1_danielcastro/theme/appStyle.dart';
 import 'package:tarea1_danielcastro/utils/index.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:tarea1_danielcastro/screens/widgets/index.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
       'https://cdn.imgbin.com/2/21/11/imgbin-computer-icons-others-7yfAEzXSZHZDXpYrstq2zBP4U.jpg';
 
   buyEvent() {
-    Navigator.pushNamed(context, '/purshase');
+    Navigator.pushNamed(context, '/shoppingcart');
   }
 
   searchBarEvent() {
@@ -34,6 +34,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   addProductToShoppingCart(ProductModel product) {
     shoppingCarController.addProductToShoppingCard(product);
+  }
+
+  removeProductToSoppingCart(ProductModel product) {
+    shoppingCarController.removeProductToShoppingCard(product);
   }
 
   @override
@@ -58,9 +62,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ShearchBar(searchBarEvent: searchBarEvent),
             ProductListContainer(
-              productFaboritesController: productFaboritesController,
-              addProductToShoppingCart: addProductToShoppingCart,
-            ),
+                productFaboritesController: productFaboritesController,
+                addProductToShoppingCart: addProductToShoppingCart,
+                removeProductToSoppingCart: removeProductToSoppingCart),
           ])),
     ));
   }
@@ -147,20 +151,10 @@ class CurrentUserDataWidget extends StatelessWidget {
                                 );
                               },
                             ),
-                            // child: Text(
-                            //   countShoppingCard.toString(),
-                            //   overflow: TextOverflow.ellipsis,
-                            //   textAlign: TextAlign.center,
-                            //   style: AppStyle.txtLemonRegular20,
-                            // ),
                           ),
                         ],
                       ),
-                      ElevatedButton(
-                          onPressed: () {
-                            buyShoppingCard();
-                          },
-                          child: const Text("Comprar"))
+                      CustomElevatedButton(buyShoppingCard: buyShoppingCard)
                     ],
                   ),
                   Column(
@@ -200,6 +194,54 @@ class CurrentUserDataWidget extends StatelessWidget {
             ],
           )),
     );
+  }
+}
+
+class CustomElevatedButton extends StatelessWidget {
+  const CustomElevatedButton({
+    Key? key,
+    required this.buyShoppingCard,
+  }) : super(key: key);
+
+  final Function buyShoppingCard;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        onTap: () {
+          buyShoppingCard();
+        },
+        child: Container(
+          // ignore: sort_child_properties_last
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Text("Comprar",
+                style: TextStyle(
+                  color: ColorConstant.whiteA700,
+                  fontSize: getFontSize(
+                    15,
+                  ),
+                  fontFamily: 'Lemon',
+                  fontWeight: FontWeight.w400,
+                )),
+          ),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              gradient: LinearGradient(
+                begin: const Alignment(
+                  1.0000000705531984,
+                  -0.36486471563885203,
+                ),
+                end: const Alignment(
+                  0.049586820853279256,
+                  1.2297299330683025,
+                ),
+                colors: [
+                  ColorConstant.deepPurple701,
+                  ColorConstant.pink501,
+                ],
+              )),
+        ));
   }
 }
 
@@ -259,11 +301,13 @@ class ProductListContainer extends StatelessWidget {
     Key? key,
     required this.productFaboritesController,
     required this.addProductToShoppingCart,
+    required this.removeProductToSoppingCart,
   }) : super(key: key);
 
   final ProductFaboritesController productFaboritesController;
 
   final Function addProductToShoppingCart;
+  final Function removeProductToSoppingCart;
 
   redirectProductDetailScreen(ProductModel product) {
     print("vamos a ver los detalles del producto ${product.productName}");
@@ -288,66 +332,13 @@ class ProductListContainer extends StatelessWidget {
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
-                    // redirectProductDetailScreen(
-                    //      controller.favoritesProduct[index]);
                     Navigator.pushNamed(context, "/details",
                         arguments: controller.favoritesProduct[index]);
                   },
-                  child: Card(
-                    child: Padding(
-                      padding: getPadding(all: 8),
-                      child: Row(
-                        children: [
-                          CommonImageView(
-                            url:
-                                controller.favoritesProduct[index].productImage,
-                            height: getVerticalSize(70.00),
-                            width: getHorizontalSize(70),
-                          ),
-                          SizedBox(
-                            width: getHorizontalSize(15),
-                          ),
-                          Container(
-                            width: getHorizontalSize(230.00),
-                            padding: getPadding(left: 5, right: 5),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  controller
-                                      .favoritesProduct[index].productName,
-                                  style: AppStyle.txtLemonRegular15,
-                                  textAlign: TextAlign.start,
-                                ),
-                                Text(
-                                  controller.favoritesProduct[index]
-                                      .productDescription,
-                                  style: AppStyle.txtQuandoRegular15,
-                                  textAlign: TextAlign.start,
-                                ),
-                                RatingBarIByitem(
-                                  rating:
-                                      controller.favoritesProduct[index].rating,
-                                ),
-                              ],
-                            ),
-                          ),
-                          Center(
-                            child: ElevatedButton(
-                              onPressed: () {
-                                addProductToShoppingCart(
-                                    controller.favoritesProduct[index]);
-                              },
-                              child: Icon(
-                                Icons.plus_one,
-                                color: ColorConstant.whiteA700,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
+                  child: ItemWidget(
+                      product: controller.favoritesProduct[index],
+                      removeProductToSoppingCart: removeProductToSoppingCart,
+                      addProductToShoppingCart: addProductToShoppingCart),
                 );
               },
             );
@@ -356,33 +347,100 @@ class ProductListContainer extends StatelessWidget {
   }
 }
 
-class RatingBarIByitem extends StatelessWidget {
-  const RatingBarIByitem({
+class ItemWidget extends StatefulWidget {
+  ItemWidget({
     Key? key,
-    required this.rating,
+    required this.addProductToShoppingCart,
+    required this.product,
+    required this.removeProductToSoppingCart,
   }) : super(key: key);
 
-  final double rating;
+  final Function addProductToShoppingCart;
+  final Function removeProductToSoppingCart;
+  final ProductModel product;
+
+  @override
+  State<ItemWidget> createState() => _ItemWidgetState();
+}
+
+class _ItemWidgetState extends State<ItemWidget> {
+  int count = 0;
 
   @override
   Widget build(BuildContext context) {
-    return RatingBar.builder(
-      initialRating: rating,
-      minRating: 0,
-      direction: Axis.horizontal,
-      allowHalfRating: true,
-      itemSize: getVerticalSize(
-        21.00,
+    return Card(
+      child: Padding(
+        padding: getPadding(all: 8),
+        child: Row(
+          children: [
+            CommonImageView(
+              url: widget.product.productImage,
+              height: getVerticalSize(70.00),
+              width: getHorizontalSize(70),
+            ),
+            SizedBox(
+              width: getHorizontalSize(15),
+            ),
+            Container(
+              width: getHorizontalSize(230.00),
+              padding: getPadding(left: 5, right: 5),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.product.productName,
+                    style: AppStyle.txtLemonRegular15,
+                    textAlign: TextAlign.start,
+                  ),
+                  Text(
+                    widget.product.productDescription,
+                    style: AppStyle.txtQuandoRegular15,
+                    textAlign: TextAlign.start,
+                  ),
+                  RatingBarIByitem(
+                    rating: widget.product.rating,
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    widget.removeProductToSoppingCart(widget.product);
+                    if (count != 0) {
+                      setState(() {
+                        count = count - 1;
+                      });
+                    }
+                  },
+                  child: Icon(
+                    Icons.remove,
+                    color: ColorConstant.deepPurple70059,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Text(count.toString()),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      count = count + 1;
+                    });
+                    widget.addProductToShoppingCart(widget.product);
+                  },
+                  child: Icon(
+                    Icons.add,
+                    color: ColorConstant.deepPurple70059,
+                  ),
+                ),
+                // addProductToShoppingCart(product);
+              ],
+            )
+          ],
+        ),
       ),
-      itemCount: 5,
-      updateOnDrag: true,
-      onRatingUpdate: (rating) {},
-      itemBuilder: (context, _) {
-        return const Icon(
-          Icons.star,
-          color: Colors.amber,
-        );
-      },
     );
   }
 }

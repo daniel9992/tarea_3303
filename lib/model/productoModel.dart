@@ -7,6 +7,7 @@ class ProductModel {
   final double rating;
   final double price;
   final int quantityAvailable;
+  int selectedcount;
 
   ProductModel(
       this.id,
@@ -16,5 +17,6 @@ class ProductModel {
       this.rating,
       this.price,
       this.category,
-      this.quantityAvailable);
+      this.quantityAvailable,
+      this.selectedcount);
 }

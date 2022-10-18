@@ -41,7 +41,8 @@ class ProductoController extends GetxController {
           4.2,
           5000,
           'Protector',
-          50),
+          50,
+          0),
       ProductModel(
           2,
           'Cable tipo C',
@@ -50,7 +51,8 @@ class ProductoController extends GetxController {
           4.5,
           3500,
           "Cable",
-          50),
+          50,
+          0),
       ProductModel(
           3,
           'Cargador Generico QuicK Charge',
@@ -59,7 +61,8 @@ class ProductoController extends GetxController {
           4.4,
           3500,
           "Cargador",
-          50),
+          50,
+          0),
       ProductModel(
           4,
           'Vidrio temperado',
@@ -68,7 +71,8 @@ class ProductoController extends GetxController {
           4.4,
           3500,
           "Protector",
-          50),
+          50,
+          0),
       ProductModel(
           5,
           'Vidrio temperado',
@@ -77,7 +81,8 @@ class ProductoController extends GetxController {
           4.4,
           3500,
           "Protector",
-          50),
+          50,
+          0),
       ProductModel(
           6,
           'Soporte de mano',
@@ -86,7 +91,8 @@ class ProductoController extends GetxController {
           3.8,
           2500,
           "Soporte",
-          50),
+          50,
+          0),
     ];
     productList.addAll(result);
   }
